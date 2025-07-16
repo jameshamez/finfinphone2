@@ -56,7 +56,7 @@ export default function BuyPage() {
       </div>
       <HeroBanner />
       <div className="mt-8 flex justify-center">
-        <a href="#" className="bg-primary text-white px-16 py-3 rounded-full font-medium text-lg hover:bg-blue-700 transition-colors">
+        <a href="/faq" className="bg-primary text-white px-16 py-3 rounded-full font-medium text-lg hover:bg-blue-700 transition-colors">
           สนใจผ่อน
         </a>
       </div>

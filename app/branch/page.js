@@ -38,6 +38,18 @@ export default function BranchPage() {
         
         {/* Company Description */}
         <div className="py-10 bg-white">
+        <h2 className="text-2xl font-bold text-center">จุดเรื่มต้นของ "ฟินฟิน"</h2>
+        <h3 className="text-xl font-bold text-center">เพื่อนที่คอยช่วยเหลือคุณให้มีชีวิตที่ดีขึ้น</h3>
+        <div className="flex justify-center my-6">
+          <Image 
+            src="/images/finfin1.png" 
+            alt="ทีมงาน FinFin" 
+            width={600} 
+            height={400}
+            className="rounded-lg shadow-lg"
+          />
+        </div>
+
           <div className="container mx-auto px-4 max-w-4xl">
             <p className="text-gray-700 text-sm mb-4 leading-relaxed">
               ฟินฟิน ก่อตั้งขึ้นเมื่อปี พ.ศ.2549 เพื่อดำเนินธุรกิจให้บริการทางการเงินแก่ผู้บริโภคที่มีรายได้ระดับน้อยถึงปานกลางซึ่งมีข้อจำกัดในการเข้าถึงแหล่งเงินทุน
@@ -65,7 +77,7 @@ export default function BranchPage() {
           
           {/* Branch Heading */}
           <div className="container mx-auto px-4 text-center mt-10 mb-6">
-            <h2 className="text-2xl font-semibold">ฟินฟิน ทั่วประเทศ</h2>
+            <h2 className="text-2xl font-semibold">ฟินฟิน ทำอะไร</h2>
           </div>
           
           {/* Service Boxes */}

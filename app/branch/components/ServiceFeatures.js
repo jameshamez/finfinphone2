@@ -2,91 +2,101 @@ import React from 'react';
 
 export default function ServiceFeatures() {
   return (
-    <div className="bg-blue-600 py-10">
+    <div className="bg-blue-600 py-6">
       <div className="container mx-auto px-4">
-        <h2 className="text-xl font-semibold text-white text-center mb-8">ที่มาของบริการ</h2>
+        <h2 className="text-lg font-semibold text-white text-center mb-3">ค่านิยมขององค์กร</h2>
+        <p className="text-white text-center text-xs mb-4">มุ่งมั่นที่จะพัฒนาคุณภาพชีวิตลูกค้าให้ดียิ่งขึ้น</p>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-          {/* Feature 1 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" />
-              </svg>
+        <div className="grid grid-cols-2 gap-3 max-w-3xl mx-auto">
+          {/* Feature 1 - Unique */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Unique</h3>
             </div>
-            <p className="text-white text-sm">One App<br />รวมทุกบริการในแอพเดียว</p>
+            <p className="text-white text-xs">สนับสนุนความพิเศษของแต่ละคน</p>
           </div>
           
-          {/* Feature 2 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M2 20H22V16H2V20ZM4 17H6V19H4V17ZM2 4V8H22V4H2ZM6 7H4V5H6V7ZM2 14H22V10H2V14ZM4 11H6V13H4V11Z" />
-              </svg>
+          {/* Feature 2 - Flexibility */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 11.01L3 11v2h18zM3 16h12v2H3zM21 6H3v2.01L21 8z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Flexibility</h3>
             </div>
-            <p className="text-white text-sm">Flexibility<br />สมัครง่าย อนุมัติไว</p>
+            <p className="text-white text-xs">พร้อมรับความเปลี่ยนแปลง</p>
           </div>
           
-          {/* Feature 3 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11.8 10.9C9.53 10.31 8.8 9.7 8.8 8.75C8.8 7.66 9.81 6.9 11.5 6.9C13.28 6.9 13.94 7.75 14 9H16.21C16.14 7.28 15.09 5.7 13 5.19V3H10V5.16C8.06 5.58 6.5 6.84 6.5 8.77C6.5 11.08 8.41 12.23 11.2 12.9C13.7 13.5 14.2 14.38 14.2 15.31C14.2 16 13.71 17.1 11.5 17.1C9.44 17.1 8.63 16.18 8.52 15H6.32C6.44 17.19 8.08 18.42 10 18.83V21H13V18.85C14.95 18.48 16.5 17.35 16.5 15.3C16.5 12.46 14.07 11.5 11.8 10.9Z" />
-              </svg>
+          {/* Feature 3 - Result Oriented */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M9 17H7V10H9V17M13 17H11V7H13V17M17 17H15V13H17V17Z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Result Oriented</h3>
             </div>
-            <p className="text-white text-sm">Interest<br />ผลิตภัณฑ์หลากหลาย</p>
+            <p className="text-white text-xs">ผลสำเร็จเป็นเลิศ</p>
           </div>
           
-          {/* Feature 4 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 11.99H19C18.47 16.11 15.72 19.78 12 20.93V12H5V6.3L12 3.19V11.99Z" />
-              </svg>
+          {/* Feature 4 - Innovative */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10-18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm-6-12c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm8 0c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Innovative</h3>
             </div>
-            <p className="text-white text-sm">Warranty<br />ดูแลตลอดการใช้งาน</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-8">
-          {/* Feature 5 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22 9.24L14.81 8.62L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.55 13.97L22 9.24ZM12 15.4L8.24 17.67L9.24 13.39L5.92 10.51L10.3 10.13L12 6.1L13.71 10.14L18.09 10.52L14.77 13.4L15.77 17.68L12 15.4Z" />
-              </svg>
-            </div>
-            <p className="text-white text-sm">Unlimited<br />พร้อมสนับสนุนทุกการเริ่มต้น</p>
+            <p className="text-white text-xs">มีความรู้เรื่องปรับปรุงเปลี่ยนแปลงใหม่</p>
           </div>
           
-          {/* Feature 6 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
-              </svg>
+          {/* Feature 5 - Energetic & Ethic */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,3C10.73,3 9.6,3.8 9.18,5H3V7H9.18C9.6,8.2 10.73,9 12,9C13.27,9 14.4,8.2 14.82,7H21V5H14.82C14.4,3.8 13.27,3 12,3M12,7A1,1 0 0,1 11,6A1,1 0 0,1 12,5A1,1 0 0,1 13,6A1,1 0 0,1 12,7M12,15C10.73,15 9.6,15.8 9.18,17H3V19H9.18C9.6,20.2 10.73,21 12,21C13.27,21 14.4,20.2 14.82,19H21V17H14.82C14.4,15.8 13.27,15 12,15M12,19A1,1 0 0,1 11,18A1,1 0 0,1 12,17A1,1 0 0,1 13,18A1,1 0 0,1 12,19M7,13H17V11H7" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Energetic & Ethic</h3>
             </div>
-            <p className="text-white text-sm">Yourself<br />ดูแลตัวเองได้ง่ายๆ ด้วย App</p>
+            <p className="text-white text-xs">กระตือรือร้นและมีคุณธรรม</p>
           </div>
           
-          {/* Feature 7 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M7,10L12,15L17,10H7Z" />
-              </svg>
+          {/* Feature 6 - Now */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M12.5 7.75V13L17 15.25L16.25 16.5L11 13.75V7.75H12.5Z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Now</h3>
             </div>
-            <p className="text-white text-sm">Speed<br />รวดเร็ว ทันใจ</p>
+            <p className="text-white text-xs">ลงมือทำทันที</p>
           </div>
           
-          {/* Feature 8 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white rounded-full p-3 mb-3">
-              <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 11.99H19C18.47 16.11 15.72 19.78 12 20.93V12H5V6.3L12 3.19V11.99Z" />
-              </svg>
+          {/* Feature 7 - Develop Yourself - Centered using col-span-2 and mx-auto */}
+          <div className="bg-blue-500 rounded-lg p-3 shadow-md col-span-2 mx-auto w-[calc(50%-0.375rem)]">
+            <div className="flex items-center mb-2">
+              <div className="bg-white rounded-full p-2 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20M17 13.5V12H9.5V10.5H17V9L20 11.25L17 13.5M7 10.5V12H14.5V13.5H7V15L4 12.75L7 10.5z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-yellow-300 text-base">Develop Yourself</h3>
             </div>
-            <p className="text-white text-sm">Care<br />ใส่ใจทุกรายละเอียด</p>
+            <p className="text-white text-xs">พัฒนาตัวเองอย่างต่อเนื่อง</p>
           </div>
         </div>
       </div>
