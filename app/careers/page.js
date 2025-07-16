@@ -1,8 +1,21 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function CareersPage() {
+  const [openJob, setOpenJob] = useState(null);
+  
+  const toggleJob = (index) => {
+    if (openJob === index) {
+      setOpenJob(null);
+    } else {
+      setOpenJob(index);
+    }
+  };
+  
   return (
     <>
       <Navbar />
@@ -22,39 +35,188 @@ export default function CareersPage() {
             <p className="font-semibold mb-4">ตำแหน่งที่ FinFinPhone กำลังตามหา</p>
             
             <div className="border rounded-md overflow-hidden mb-2">
-              <div className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+              <div 
+                className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleJob(0)}
+              >
                 <p className="font-medium">Sales Coordinate (ประจำสำนักงานใหญ่)</p>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg 
+                  className={`w-5 h-5 transform transition-transform ${openJob === 0 ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
               </div>
+              {openJob === 0 && (
+                <div className="p-4 bg-gray-50 border-t">
+                  <h4 className="font-medium text-blue-600 mb-2">รายละเอียดงาน</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>ประสานงานระหว่างฝ่ายขายและลูกค้า</li>
+                    <li>จัดการเอกสารการขายและสัญญา</li>
+                    <li>ติดตามสถานะการขายและรายงานผล</li>
+                    <li>ให้ข้อมูลสินค้าและโปรโมชั่นแก่ลูกค้า</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">คุณสมบัติ</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>วุฒิการศึกษาระดับ ปวส. หรือปริญญาตรีขึ้นไป</li>
+                    <li>มีประสบการณ์ด้านงานขายหรือประสานงานขาย 1-2 ปี</li>
+                    <li>มีทักษะการสื่อสารและการประสานงานที่ดี</li>
+                    <li>สามารถใช้คอมพิวเตอร์โปรแกรม Microsoft Office ได้ดี</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">สวัสดิการ</h4>
+                  <ul className="list-disc pl-5 text-sm">
+                    <li>เงินเดือน 18,000 - 25,000 บาท (ตามประสบการณ์)</li>
+                    <li>โบนัสประจำปี</li>
+                    <li>ประกันสังคม</li>
+                    <li>ประกันสุขภาพ</li>
+                    <li>วันหยุดพักร้อนประจำปี</li>
+                  </ul>
+                </div>
+              )}
             </div>
             
             <div className="border rounded-md overflow-hidden mb-2">
-              <div className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+              <div 
+                className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleJob(1)}
+              >
                 <p className="font-medium">Sales (ประจำสำนักงานใหญ่/สาขา)</p>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg 
+                  className={`w-5 h-5 transform transition-transform ${openJob === 1 ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
               </div>
+              {openJob === 1 && (
+                <div className="p-4 bg-gray-50 border-t">
+                  <h4 className="font-medium text-blue-600 mb-2">รายละเอียดงาน</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>นำเสนอและขายสินค้าให้กับลูกค้า</li>
+                    <li>ให้คำแนะนำเกี่ยวกับผลิตภัณฑ์และบริการ</li>
+                    <li>สร้างและรักษาความสัมพันธ์กับลูกค้า</li>
+                    <li>ทำยอดขายตามเป้าหมายที่กำหนด</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">คุณสมบัติ</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>วุฒิการศึกษาระดับ ม.6 หรือ ปวช. ขึ้นไป</li>
+                    <li>มีประสบการณ์ด้านงานขาย 1 ปีขึ้นไป (หากไม่มีประสบการณ์ จะได้รับการฝึกอบรม)</li>
+                    <li>มีทักษะการสื่อสารและการเจรจาต่อรองที่ดี</li>
+                    <li>มีความกระตือรือร้น ขยัน อดทน</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">สวัสดิการ</h4>
+                  <ul className="list-disc pl-5 text-sm">
+                    <li>เงินเดือน + คอมมิชชั่น (รายได้รวม 20,000 - 35,000 บาท)</li>
+                    <li>โบนัสตามยอดขาย</li>
+                    <li>ประกันสังคม</li>
+                    <li>ค่าเดินทาง</li>
+                    <li>การฝึกอบรมพัฒนาทักษะ</li>
+                  </ul>
+                </div>
+              )}
             </div>
             
             <div className="border rounded-md overflow-hidden mb-2">
-              <div className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+              <div 
+                className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleJob(2)}
+              >
                 <p className="font-medium">เจ้าหน้าที่จัดซื้อสินค้า (ต่างสาขา)</p>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg 
+                  className={`w-5 h-5 transform transition-transform ${openJob === 2 ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
               </div>
+              {openJob === 2 && (
+                <div className="p-4 bg-gray-50 border-t">
+                  <h4 className="font-medium text-blue-600 mb-2">รายละเอียดงาน</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>จัดซื้อสินค้าและอุปกรณ์สำหรับสาขาต่างๆ</li>
+                    <li>ติดต่อประสานงานกับซัพพลายเออร์</li>
+                    <li>ตรวจสอบคุณภาพและปริมาณสินค้า</li>
+                    <li>จัดการเอกสารการสั่งซื้อและการรับสินค้า</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">คุณสมบัติ</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>วุฒิการศึกษาระดับ ปวส. หรือปริญญาตรีขึ้นไป</li>
+                    <li>มีประสบการณ์ด้านงานจัดซื้อ 1-2 ปี</li>
+                    <li>มีความรู้เกี่ยวกับสมาร์ทโฟนและอุปกรณ์อิเล็กทรอนิกส์</li>
+                    <li>มีทักษะการเจรจาต่อรองที่ดี</li>
+                    <li>สามารถเดินทางไปปฏิบัติงานนอกสถานที่ได้</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">สวัสดิการ</h4>
+                  <ul className="list-disc pl-5 text-sm">
+                    <li>เงินเดือน 20,000 - 28,000 บาท (ตามประสบการณ์)</li>
+                    <li>ค่าเดินทาง</li>
+                    <li>เบี้ยเลี้ยง</li>
+                    <li>ประกันสังคม</li>
+                    <li>โบนัสประจำปี</li>
+                  </ul>
+                </div>
+              )}
             </div>
             
             <div className="border rounded-md overflow-hidden mb-2">
-              <div className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+              <div 
+                className="bg-white p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleJob(3)}
+              >
                 <p className="font-medium">เจ้าหน้าที่จัดซื้อสินค้า (ทางโทรศัพท์)</p>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg 
+                  className={`w-5 h-5 transform transition-transform ${openJob === 3 ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
               </div>
+              {openJob === 3 && (
+                <div className="p-4 bg-gray-50 border-t">
+                  <h4 className="font-medium text-blue-600 mb-2">รายละเอียดงาน</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>ติดต่อและจัดซื้อสินค้าผ่านทางโทรศัพท์</li>
+                    <li>เจรจาต่อรองราคาและเงื่อนไขกับซัพพลายเออร์</li>
+                    <li>ตรวจสอบและติดตามสถานะการสั่งซื้อ</li>
+                    <li>จัดการเอกสารการสั่งซื้อและการชำระเงิน</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">คุณสมบัติ</h4>
+                  <ul className="list-disc pl-5 mb-3 text-sm">
+                    <li>วุฒิการศึกษาระดับ ปวส. หรือปริญญาตรีขึ้นไป</li>
+                    <li>มีประสบการณ์ด้านงานจัดซื้อหรือ Telesales 1 ปีขึ้นไป</li>
+                    <li>มีทักษะการสื่อสารและการเจรจาต่อรองทางโทรศัพท์ที่ดี</li>
+                    <li>มีความรู้เกี่ยวกับสมาร์ทโฟนและอุปกรณ์อิเล็กทรอนิกส์</li>
+                  </ul>
+                  
+                  <h4 className="font-medium text-blue-600 mb-2">สวัสดิการ</h4>
+                  <ul className="list-disc pl-5 text-sm">
+                    <li>เงินเดือน 18,000 - 25,000 บาท (ตามประสบการณ์)</li>
+                    <li>ค่าโทรศัพท์</li>
+                    <li>โบนัสตามผลงาน</li>
+                    <li>ประกันสังคม</li>
+                    <li>วันหยุดพักร้อนประจำปี</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 

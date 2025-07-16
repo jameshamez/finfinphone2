@@ -6,7 +6,7 @@ import InfoBoxes from './components/InfoBoxes';
 import Products from './components/Products';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import ServiceBanner from '../..//components/ServiceBanner';
+import ServiceBanner from '../../components/ServiceBanner';
 
 export const metadata = {
   title: 'ผ่อนสินค้า | FinFin',

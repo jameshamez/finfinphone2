@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Products() {
   const articles = [
@@ -69,9 +70,11 @@ export default function Products() {
         
         {/* "View All" Button */}
         <div className="text-center mt-8">
-          <button className="bg-primary text-white hover:bg-blue-700 transition-colors font-medium py-2 px-8 rounded">
-            ดูเพิ่มเติม
-          </button>
+          <Link href="/contact">
+            <button className="bg-primary text-white hover:bg-blue-700 transition-colors font-medium py-2 px-8 rounded">
+              ดูเพิ่มเติม
+            </button>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function InfoBoxes() {
   return (
@@ -98,9 +99,11 @@ export default function InfoBoxes() {
                 
         {/* CTA Button */}
         <div className="text-center mt-8">
-          <button className="bg-primary text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition duration-300">
-            สนใจออมดาวน์ โหลดเลย
-          </button>
+          <Link href="/faq">
+            <button className="bg-primary text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition duration-300">
+              สนใจออมดาวน์ โหลดเลย
+            </button>
+          </Link>
         </div>
 
       </div>

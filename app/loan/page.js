@@ -6,6 +6,7 @@ import Products from './components/Products';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import ServiceBanner from '../../components/ServiceBanner';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'สินเชื่อ | FinFin',
@@ -42,9 +43,9 @@ export default function LoanPage() {
       </div>
       <HeroBanner />
       <div className="mt-8 flex justify-center py-10">
-        <a href="#" className="bg-primary text-white px-16 py-3 rounded-full font-medium text-lg hover:bg-blue-700 transition-colors">
+        <Link href="/faq" className="bg-primary text-white px-16 py-3 rounded-full font-medium text-lg hover:bg-blue-700 transition-colors">
           สนใจออมดาวน์ โหลดเลย
-        </a>
+        </Link>
       </div>
       <ThreeSteps />
       <InfoBoxes />
