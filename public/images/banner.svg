@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="100" viewBox="0 0 800 100">
+  <rect width="800" height="100" fill="#0B61D1"/>
+  <text x="250" y="40" font-family="Arial" font-size="24" fill="white">อยากมือใหม่...</text>
+  <text x="250" y="70" font-family="Arial" font-size="20" fill="white">แต่กล้วยโดนใจ</text>
+  <text x="450" y="40" font-family="Arial" font-size="22" fill="white">เริ่มต้นที่</text>
+  <text x="450" y="70" font-family="Arial" font-size="48" fill="#FF3333" font-weight="bold">4900.-</text>
+  <text x="650" y="40" font-family="Arial" font-size="18" fill="white">สนใจสมัคร</text>
+  <text x="650" y="70" font-family="Arial" font-size="18" fill="white">คลิกเลย</text>
+</svg>

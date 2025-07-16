@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: white;
+  font-family: 'Prompt', sans-serif;
+}
+
+.bg-primary {
+  background-color: #1e56c0;
+}
+
+.text-primary {
+  color: #1e56c0;
+}
+
+.yellow-card {
+  background-color: #ffcc00;
+}
+
+.green-card {
+  background-color: #00cc66;
+}
+
+.blue-card {
+  background-color: #2255aa;
+}
+
+.btn-primary {
+  background-color: #1e56c0;
+  color: white;
+  padding: 0.5rem 2rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.form-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.three-step-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .three-step-container {
+    grid-template-columns: 1fr;
+  }
+}
