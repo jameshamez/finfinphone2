@@ -1,0 +1,648 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { FaEdit, FaSave, FaTimes, FaHome, FaArrowLeft, FaShoppingCart, FaExchangeAlt, FaMoneyBillWave, FaTag } from "react-icons/fa";
+
+export default function AdminHomepagePage() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(null);
+  const editInputRef = useRef(null);
+
+  // โหลดข้อมูลหน้าแรก
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/cms/homepage');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // เปิด/ปิดโหมดแก้ไข
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+    setActiveEdit(null);
+  };
+
+  // เริ่มแก้ไขฟิลด์
+  const startEditing = (path, value) => {
+    setActiveEdit({ path, value });
+    setTimeout(() => {
+      if (editInputRef.current) {
+        editInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  // ยกเลิกการแก้ไข
+  const cancelEditing = () => {
+    setActiveEdit(null);
+  };
+
+  // บันทึกการแก้ไขฟิลด์
+  const saveEdit = (newValue) => {
+    if (!activeEdit) return;
+    
+    const { path } = activeEdit;
+    const pathParts = path.split('.');
+    const updatedData = { ...data };
+    
+    let current = updatedData;
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const part = pathParts[i];
+      if (part.includes('[')) {
+        const arrayName = part.split('[')[0];
+        const index = parseInt(part.split('[')[1].replace(']', ''));
+        current = current[arrayName][index];
+      } else {
+        current = current[part];
+      }
+    }
+    
+    const lastPart = pathParts[pathParts.length - 1];
+    current[lastPart] = newValue;
+    
+    setData(updatedData);
+    setActiveEdit(null);
+  };
+
+  // บันทึกข้อมูลทั้งหมด
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveMessage(null);
+    
+    try {
+      const response = await fetch('/api/cms/homepage', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save data');
+      }
+      
+      setSaveMessage({ type: 'success', text: 'บันทึกข้อมูลสำเร็จ' });
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (err) {
+      setSaveMessage({ type: 'error', text: `เกิดข้อผิดพลาด: ${err.message}` });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // คอมโพเนนต์สำหรับแสดงข้อความที่แก้ไขได้
+  const EditableText = ({ path, value, type = 'text', className = '' }) => {
+    const isEditing = activeEdit && activeEdit.path === path;
+    
+    if (!editMode) {
+      return <span className={className}>{value}</span>;
+    }
+    
+    if (isEditing) {
+      if (type === 'textarea') {
+        return (
+          <div className="relative inline-block w-full">
+            <textarea
+              ref={editInputRef}
+              className="w-full p-2 border border-blue-500 rounded bg-white text-gray-800"
+              value={activeEdit.value}
+              onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+              rows={3}
+            />
+            <div className="absolute right-0 top-0 flex">
+              <button
+                className="bg-green-500 text-white p-1 rounded-tr"
+                onClick={() => saveEdit(activeEdit.value)}
+              >
+                <FaSave size={16} />
+              </button>
+              <button
+                className="bg-red-500 text-white p-1 rounded-br"
+                onClick={cancelEditing}
+              >
+                <FaTimes size={16} />
+              </button>
+            </div>
+          </div>
+        );
+      }
+      
+      return (
+        <div className="relative inline-block">
+          <input
+            ref={editInputRef}
+            type="text"
+            className="p-1 border border-blue-500 rounded bg-white text-gray-800"
+            value={activeEdit.value}
+            onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+          />
+          <div className="absolute right-0 top-0 flex">
+            <button
+              className="bg-green-500 text-white p-1 rounded-tr"
+              onClick={() => saveEdit(activeEdit.value)}
+            >
+              <FaSave size={12} />
+            </button>
+            <button
+              className="bg-red-500 text-white p-1 rounded-br"
+              onClick={cancelEditing}
+            >
+              <FaTimes size={12} />
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <span 
+        className={`${className} relative group cursor-pointer hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded px-1`}
+        onClick={() => startEditing(path, value)}
+      >
+        {value}
+        <span className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 bg-blue-500 text-white rounded-full p-1">
+          <FaEdit size={12} />
+        </span>
+      </span>
+    );
+  };
+  
+  // คอมโพเนนต์สำหรับแสดงรูปภาพที่แก้ไขได้
+  const EditableImage = ({ path, src, alt, width, height, className = '' }) => {
+    const isEditing = activeEdit && activeEdit.path === path;
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
+    
+    const handleFileUpload = async (e) => {
+      if (!e.target.files || e.target.files.length === 0) return;
+      
+      const file = e.target.files[0];
+      setUploading(true);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          setActiveEdit({...activeEdit, value: result.url});
+        } else {
+          alert('อัพโหลดไม่สำเร็จ: ' + (result.error || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ'));
+        }
+      } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการอัพโหลดไฟล์:', error);
+        alert('เกิดข้อผิดพลาดในการอัพโหลดไฟล์');
+      } finally {
+        setUploading(false);
+      }
+    };
+    
+    if (!editMode) {
+      return (
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+        />
+      );
+    }
+    
+    if (isEditing) {
+      return (
+        <div className="relative p-4 border-2 border-blue-500 rounded bg-white shadow-lg w-full max-w-md">
+          <h3 className="font-bold text-lg mb-2">แก้ไขรูปภาพ</h3>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">URL รูปภาพ</label>
+            <input
+              ref={editInputRef}
+              type="text"
+              className="p-2 border rounded w-full mb-2"
+              value={activeEdit.value}
+              onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+              placeholder="ใส่ URL รูปภาพ"
+            />
+            
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={() => fileInputRef.current?.click()} 
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors flex items-center"
+                disabled={uploading}
+              >
+                {uploading ? 'กำลังอัพโหลด...' : 'อัพโหลดรูปภาพ'}
+              </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload} 
+                className="hidden" 
+                accept="image/*"
+              />
+            </div>
+          </div>
+          
+          {/* แสดงตัวอย่างรูปภาพ */}
+          {activeEdit.value && (
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 mb-1">ตัวอย่าง:</p>
+              <div className="border rounded p-2 bg-gray-50">
+                <img 
+                  src={activeEdit.value} 
+                  alt="Preview" 
+                  className="max-h-40 object-contain mx-auto"
+                  onError={(e) => e.target.src = '/images/placeholder.png'}
+                />
+              </div>
+            </div>
+          )}
+          
+          <div className="flex justify-end space-x-2">
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors flex items-center"
+              onClick={cancelEditing}
+            >
+              <FaTimes className="mr-1" /> ยกเลิก
+            </button>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors flex items-center"
+              onClick={() => saveEdit(activeEdit.value)}
+              disabled={uploading}
+            >
+              <FaSave className="mr-1" /> บันทึก
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="relative group cursor-pointer">
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+          onClick={() => startEditing(path, src)}
+        />
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-blue-500 text-white rounded-full p-1">
+          <FaEdit size={16} />
+        </div>
+      </div>
+    );
+  };
+
+  // แสดงไอคอนตามชื่อ
+  const getIconByName = (iconName) => {
+    switch(iconName) {
+      case 'shopping-cart': return <FaShoppingCart />;
+      case 'refresh': return <FaExchangeAlt />;
+      case 'cash': return <FaMoneyBillWave />;
+      case 'tag': return <FaTag />;
+      default: return <FaHome />;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="spinner-border text-blue-600" role="status">
+            <span className="sr-only">กำลังโหลด...</span>
+          </div>
+          <p className="mt-2">กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">เกิดข้อผิดพลาด</h2>
+          <p className="mb-4">{error}</p>
+          <Link href="/admin" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            กลับไปหน้า Admin
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* Sidebar - คล้าย WordPress */}
+      <div className="w-64 bg-gray-900 text-white min-h-screen">
+        <div className="p-4 border-b border-gray-800">
+          <h1 className="text-xl font-bold">FinFin Admin</h1>
+        </div>
+        <nav className="mt-4">
+          <div className="px-4 py-2 bg-gray-800 text-white font-medium">จัดการเนื้อหา</div>
+          <Link href="/admin/homepage" className="flex items-center px-4 py-3 bg-blue-600 text-white hover:bg-blue-700">
+            <FaHome className="mr-3" /> หน้าแรก
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaShoppingCart className="mr-3" /> สินค้า
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaExchangeAlt className="mr-3" /> บริการ
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaMoneyBillWave className="mr-3" /> โปรโมชั่น
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaTag className="mr-3" /> FAQ
+          </Link>
+        </nav>
+        <div className="absolute bottom-0 left-0 w-64 p-4 bg-gray-900 border-t border-gray-800">
+          <Link href="/" className="flex items-center text-gray-300 hover:text-white">
+            <FaArrowLeft className="mr-2" /> กลับไปหน้าเว็บไซต์
+          </Link>
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="py-6 px-8">
+          <div className="flex justify-between items-center mb-6 border-b pb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">จัดการหน้าแรก</h1>
+            
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleEditMode}
+                className={`px-4 py-2 rounded-md ${editMode ? 'bg-gray-500 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-600'} text-white flex items-center`}
+              >
+                {editMode ? <><FaTimes className="mr-2" /> ยกเลิกการแก้ไข</> : <><FaEdit className="mr-2" /> แก้ไขเนื้อหา</>}
+              </button>
+              
+              {editMode && (
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md flex items-center"
+                >
+                  {isSaving ? 'กำลังบันทึก...' : <><FaSave className="mr-2" /> บันทึกการเปลี่ยนแปลง</>}
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {saveMessage && (
+            <div className={`mb-6 p-4 rounded-md ${saveMessage.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'} flex items-center`}>
+              {saveMessage.type === 'success' ? (
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+              ) : (
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
+              )}
+              {saveMessage.text}
+            </div>
+          )}
+          
+          {editMode && (
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    คุณกำลังอยู่ในโหมดแก้ไข คลิกที่ข้อความหรือรูปภาพเพื่อแก้ไข และกดปุ่ม "บันทึกการเปลี่ยนแปลง" เมื่อเสร็จสิ้น
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {/* ลบปุ่มบันทึกซ้ำออก เนื่องจากมีอยู่ด้านบนแล้ว */}
+
+        {/* ลบคำแนะนำซ้ำออก เนื่องจากมีอยู่ด้านบนแล้ว */}
+
+        {/* Preview Content */}
+        {data && (
+          <div className="space-y-16">
+            {/* Hero Section */}
+            <section className="bg-blue-600 text-white py-12 rounded-lg overflow-hidden relative">
+              <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
+                <div className="md:w-1/2 mb-8 md:mb-0">
+                  <h1 className="text-4xl font-bold mb-4">
+                    <EditableText 
+                      path="hero.title" 
+                      value={data.hero.title} 
+                      className="text-4xl font-bold"
+                    />
+                  </h1>
+                  <h2 className="text-2xl mb-4">
+                    <EditableText 
+                      path="hero.subtitle" 
+                      value={data.hero.subtitle}
+                      className="text-2xl"
+                    />
+                  </h2>
+                  <p className="mb-6">
+                    <EditableText 
+                      path="hero.description" 
+                      value={data.hero.description}
+                      type="textarea"
+                    />
+                  </p>
+                  <button className="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors">
+                    <EditableText 
+                      path="hero.buttonText" 
+                      value={data.hero.buttonText}
+                    />
+                  </button>
+                  <div className="text-xs mt-2 text-blue-200">
+                    Link: <EditableText path="hero.buttonLink" value={data.hero.buttonLink} />
+                  </div>
+                </div>
+                <div className="md:w-1/2">
+                  <EditableImage 
+                    path="hero.image" 
+                    src={data.hero.image} 
+                    alt="Hero Image"
+                    width={500}
+                    height={300}
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Features Section */}
+            <section className="py-12">
+              <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {data.features.map((feature, index) => (
+                    <div key={feature.id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                      <div className="text-blue-600 text-3xl mb-4">
+                        {getIconByName(feature.icon)}
+                        <div className="text-xs text-gray-500 mt-1">
+                          Icon: <EditableText path={`features[${index}].icon`} value={feature.icon} />
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        <EditableText path={`features[${index}].title`} value={feature.title} />
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        <EditableText path={`features[${index}].description`} value={feature.description} />
+                      </p>
+                      <div className="text-xs text-gray-500">
+                        Link: <EditableText path={`features[${index}].link`} value={feature.link} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Product Showcase Section */}
+            <section className="py-12 bg-gray-50 rounded-lg">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-bold mb-4">
+                    <EditableText path="productShowcase.title" value={data.productShowcase.title} />
+                  </h2>
+                  <p className="text-gray-600">
+                    <EditableText path="productShowcase.subtitle" value={data.productShowcase.subtitle} />
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {data.productShowcase.products.map((product, index) => (
+                    <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                      <div className="relative h-48">
+                        <EditableImage 
+                          path={`productShowcase.products[${index}].image`}
+                          src={product.image}
+                          alt={product.name}
+                          width={300}
+                          height={200}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold mb-2">
+                          <EditableText path={`productShowcase.products[${index}].name`} value={product.name} />
+                        </h3>
+                        <p className="text-blue-600 font-bold mb-4">
+                          ฿<EditableText path={`productShowcase.products[${index}].price`} value={product.price} />
+                        </p>
+                        <div className="text-xs text-gray-500">
+                          Link: <EditableText path={`productShowcase.products[${index}].link`} value={product.link} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="text-center mt-8">
+                  <button className="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                    <EditableText path="productShowcase.buttonText" value={data.productShowcase.buttonText} />
+                  </button>
+                  <div className="text-xs text-gray-500 mt-2">
+                    Link: <EditableText path="productShowcase.buttonLink" value={data.productShowcase.buttonLink} />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Testimonials Section */}
+            <section className="py-12">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-bold mb-4">รีวิวจากลูกค้า</h2>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {data.testimonials.map((testimonial, index) => (
+                    <div key={testimonial.id} className="bg-white p-6 rounded-lg shadow-md">
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 mr-4 relative">
+                          <EditableImage 
+                            path={`testimonials[${index}].image`}
+                            src={testimonial.image}
+                            alt={testimonial.name}
+                            width={48}
+                            height={48}
+                            className="rounded-full object-cover w-full h-full"
+                          />
+                        </div>
+                        <h3 className="font-semibold">
+                          <EditableText path={`testimonials[${index}].name`} value={testimonial.name} />
+                        </h3>
+                      </div>
+                      <p className="text-gray-600 italic">
+                        <EditableText path={`testimonials[${index}].text`} value={testimonial.text} type="textarea" />
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Call to Action Section */}
+            <section className="bg-blue-600 text-white py-12 rounded-lg">
+              <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
+                <div className="md:w-2/3 mb-8 md:mb-0">
+                  <h2 className="text-3xl font-bold mb-4">
+                    <EditableText path="callToAction.title" value={data.callToAction.title} />
+                  </h2>
+                  <p className="mb-6">
+                    <EditableText path="callToAction.description" value={data.callToAction.description} type="textarea" />
+                  </p>
+                  <button className="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors">
+                    <EditableText path="callToAction.buttonText" value={data.callToAction.buttonText} />
+                  </button>
+                  <div className="text-xs mt-2 text-blue-200">
+                    Link: <EditableText path="callToAction.buttonLink" value={data.callToAction.buttonLink} />
+                  </div>
+                </div>
+                <div className="md:w-1/3">
+                  <EditableImage 
+                    path="callToAction.image"
+                    src={data.callToAction.image}
+                    alt="Call to Action"
+                    width={300}
+                    height={200}
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

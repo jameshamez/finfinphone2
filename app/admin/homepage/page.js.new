@@ -1,0 +1,481 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { FaEdit, FaSave, FaTimes, FaHome, FaArrowLeft, FaShoppingCart, FaExchangeAlt, FaMoneyBillWave, FaTag, FaSync } from "react-icons/fa";
+
+export default function AdminHomepagePage() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(null);
+  const editInputRef = useRef(null);
+
+  // ฟังก์ชันโหลดข้อมูลใหม่
+  const refreshData = async () => {
+    setLoading(true);
+    try {
+      // โหลดข้อมูลจากไฟล์ JSON โดยตรง โดยไม่ใช้ cache
+      const timestamp = new Date().getTime(); // เพิ่ม timestamp เพื่อป้องกันการ cache
+      const response = await fetch(`/data/homepage.json?t=${timestamp}`, {
+        cache: 'no-store', // ไม่ใช้ cache
+        headers: {
+          'Cache-Control': 'no-cache', // ไม่ใช้ cache
+          'Pragma': 'no-cache' // ไม่ใช้ cache
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const result = await response.json();
+      setData(result);
+      console.log('Data refreshed:', result);
+    } catch (err) {
+      console.error('Error refreshing data:', err);
+      // ถ้าเกิดข้อผิดพลาด ใช้ข้อมูลตัวอย่างแทน
+      setError(err.message);
+      
+      // ข้อมูลตัวอย่างสำหรับกรณีที่ไม่สามารถโหลดไฟล์ได้
+      const sampleData = {
+        hero: {
+          title: "ผ่อนไอโฟนที่ ฟินฟิน",
+          subtitle: "ง่าย ไว ชัวร์!",
+          description: "บริการผ่อนสินค้าไอทีชั้นนำ ดอกเบี้ยต่ำ อนุมัติไว",
+          image: "/images/banner1.png"
+        },
+        features: [
+          {
+            id: 1,
+            icon: "shopping-cart",
+            title: "เลือกสินค้า",
+            description: "เลือกสินค้าที่ต้องการผ่อน"
+          },
+          {
+            id: 2,
+            icon: "document",
+            title: "กรอกข้อมูล",
+            description: "กรอกข้อมูลส่วนตัวและเอกสาร"
+          },
+          {
+            id: 3,
+            icon: "check",
+            title: "รออนุมัติ",
+            description: "รออนุมัติไม่เกิน 30 นาที"
+          }
+        ]
+      };
+      
+      setData(sampleData);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // โหลดข้อมูลเมื่อเปิดหน้าเว็บครั้งแรก
+  useEffect(() => {
+    refreshData();
+  }, []);
+
+  // เปิด/ปิดโหมดแก้ไข
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+    setActiveEdit(null);
+  };
+
+  // เริ่มแก้ไขฟิลด์
+  const startEditing = (path, value) => {
+    setActiveEdit({ path, value });
+    setTimeout(() => {
+      if (editInputRef.current) {
+        editInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  // ยกเลิกการแก้ไข
+  const cancelEditing = () => {
+    setActiveEdit(null);
+  };
+
+  // บันทึกการแก้ไข
+  const saveEditing = (path, newValue) => {
+    if (!data) return;
+    
+    // แยกพาธเป็นส่วนๆ เช่น "hero.title" => ["hero", "title"]
+    const pathParts = path.split('.');
+    
+    // สร้างก็อปปี้ของข้อมูลเพื่อไม่ให้เปลี่ยนแปลงข้อมูลเดิมโดยตรง
+    const newData = JSON.parse(JSON.stringify(data));
+    
+    // หาตำแหน่งที่จะแก้ไข
+    let current = newData;
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      current = current[pathParts[i]];
+    }
+    
+    // แก้ไขข้อมูล
+    current[pathParts[pathParts.length - 1]] = newValue;
+    
+    // อัพเดทข้อมูล
+    setData(newData);
+    setActiveEdit(null);
+  };
+
+  // คอมโพเนนต์สำหรับข้อความที่แก้ไขได้
+  const EditableText = ({ path, value, className, tag = 'p' }) => {
+    const isEditing = activeEdit && activeEdit.path === path;
+    const Tag = tag;
+    
+    if (editMode) {
+      if (isEditing) {
+        return (
+          <div className="relative">
+            <input
+              ref={editInputRef}
+              type="text"
+              value={activeEdit.value}
+              onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+              className={`w-full p-2 border border-blue-500 rounded ${className}`}
+              onBlur={() => saveEditing(path, activeEdit.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') saveEditing(path, activeEdit.value);
+                if (e.key === 'Escape') cancelEditing();
+              }}
+            />
+            <div className="absolute top-0 right-0 flex">
+              <button onClick={() => saveEditing(path, activeEdit.value)} className="p-1 bg-green-500 text-white">
+                <FaSave size={14} />
+              </button>
+              <button onClick={cancelEditing} className="p-1 bg-red-500 text-white">
+                <FaTimes size={14} />
+              </button>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <Tag className={`${className} relative group cursor-pointer`} onClick={() => startEditing(path, value)}>
+            {value}
+            <button className="absolute top-0 right-0 p-1 bg-blue-500 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+              <FaEdit size={14} />
+            </button>
+          </Tag>
+        );
+      }
+    }
+    
+    return <Tag className={className}>{value}</Tag>;
+  };
+
+  // คอมโพเนนต์สำหรับรูปภาพที่แก้ไขได้
+  const EditableImage = ({ path, src, alt, width, height, className }) => {
+    const isEditing = activeEdit && activeEdit.path === path;
+    
+    if (editMode) {
+      if (isEditing) {
+        return (
+          <div className="relative">
+            <input
+              ref={editInputRef}
+              type="text"
+              value={activeEdit.value}
+              onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+              className="w-full p-2 border border-blue-500 rounded"
+              onBlur={() => saveEditing(path, activeEdit.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') saveEditing(path, activeEdit.value);
+                if (e.key === 'Escape') cancelEditing();
+              }}
+            />
+            <div className="absolute top-0 right-0 flex">
+              <button onClick={() => saveEditing(path, activeEdit.value)} className="p-1 bg-green-500 text-white">
+                <FaSave size={14} />
+              </button>
+              <button onClick={cancelEditing} className="p-1 bg-red-500 text-white">
+                <FaTimes size={14} />
+              </button>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="relative group cursor-pointer" onClick={() => startEditing(path, src)}>
+            <Image
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              className={className}
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity">
+              <FaEdit size={24} className="text-white" />
+            </div>
+          </div>
+        );
+      }
+    }
+    
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+      />
+    );
+  };
+
+  // คอมโพเนนต์สำหรับพื้นที่ที่ยังไม่มีเนื้อหา
+  const AdminPlaceholder = ({ title, className }) => (
+    <div className={`p-4 border-2 border-dashed border-gray-300 rounded-lg text-center ${className}`}>
+      <p className="text-gray-500">{title}</p>
+    </div>
+  );
+
+  // บันทึกข้อมูลทั้งหมด
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveMessage(null);
+    
+    try {
+      // บันทึกข้อมูลลงในไฟล์ JSON โดยตรง
+      const response = await fetch('/api/save-homepage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save data');
+      }
+      
+      // แสดงข้อความสำเร็จ
+      setSaveMessage({ type: 'success', text: 'บันทึกข้อมูลสำเร็จ' });
+      setTimeout(() => setSaveMessage(null), 3000);
+      
+      // โหลดข้อมูลใหม่หลังจากบันทึก
+      setTimeout(() => {
+        refreshData();
+      }, 500);
+    } catch (err) {
+      console.error('Error saving data:', err);
+      setSaveMessage({ type: 'error', text: `เกิดข้อผิดพลาด: ${err.message}` });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-900 text-white flex flex-col relative">
+        <div className="p-4 border-b border-gray-800">
+          <h1 className="text-xl font-bold">FinFin Admin</h1>
+        </div>
+        <nav className="mt-4">
+          <div className="px-4 py-2 bg-gray-800 text-white font-medium">จัดการเนื้อหา</div>
+          <Link href="/admin/homepage" className="flex items-center px-4 py-3 bg-blue-600 text-white hover:bg-blue-700">
+            <FaHome className="mr-3" /> หน้าแรก
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaShoppingCart className="mr-3" /> สินค้า
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaExchangeAlt className="mr-3" /> บริการ
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaMoneyBillWave className="mr-3" /> โปรโมชั่น
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaTag className="mr-3" /> FAQ
+          </Link>
+        </nav>
+        <div className="absolute bottom-0 left-0 w-64 p-4 bg-gray-900 border-t border-gray-800">
+          <Link href="/" className="flex items-center text-gray-300 hover:text-white">
+            <FaArrowLeft className="mr-2" /> กลับไปหน้าเว็บไซต์
+          </Link>
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="py-6 px-8">
+          <div className="flex justify-between items-center mb-6 border-b pb-4">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-semibold text-gray-900">จัดการหน้าแรก</h1>
+              <button 
+                onClick={refreshData} 
+                className="ml-4 p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors"
+                title="รีเฟรชข้อมูล"
+              >
+                <FaSync className={loading ? "animate-spin" : ""} />
+              </button>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleEditMode}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  editMode
+                    ? 'bg-gray-200 text-gray-800'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {editMode ? 'กำลังแก้ไข...' : 'แก้ไขเนื้อหา'}
+              </button>
+              
+              {editMode && (
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-green-300"
+                >
+                  {isSaving ? 'กำลังบันทึก...' : 'บันทึกการเปลี่ยนแปลง'}
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {saveMessage && (
+            <div className={`p-4 mb-6 rounded-lg ${
+              saveMessage.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}>
+              {saveMessage.text}
+            </div>
+          )}
+          
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          ) : error ? (
+            <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+              <p>เกิดข้อผิดพลาดในการโหลดข้อมูล: {error}</p>
+              <button 
+                onClick={refreshData}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
+              >
+                ลองใหม่
+              </button>
+            </div>
+          ) : data && (
+            <div className="space-y-8">
+              {/* Hero Section Preview */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="p-4 bg-gray-50 border-b">
+                  <h2 className="text-lg font-medium text-gray-900">Hero Section</h2>
+                </div>
+                <div className="p-6">
+                  <div className="relative bg-blue-900 text-white rounded-lg overflow-hidden">
+                    <div className="absolute inset-0 opacity-20">
+                      <EditableImage 
+                        path="hero.image"
+                        src={data.hero.image}
+                        alt="Hero Background"
+                        width={1200}
+                        height={400}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="relative p-8 md:p-12 max-w-3xl">
+                      <EditableText
+                        path="hero.title"
+                        value={data.hero.title}
+                        className="text-3xl md:text-4xl font-bold mb-2"
+                        tag="h1"
+                      />
+                      <EditableText
+                        path="hero.subtitle"
+                        value={data.hero.subtitle}
+                        className="text-xl md:text-2xl font-medium mb-4"
+                        tag="h2"
+                      />
+                      <EditableText
+                        path="hero.description"
+                        value={data.hero.description}
+                        className="text-base md:text-lg opacity-90 mb-6"
+                      />
+                      <div className="flex flex-wrap gap-3">
+                        <button className="px-6 py-2 bg-white text-blue-900 font-medium rounded-full hover:bg-gray-100">
+                          ดูรายละเอียด
+                        </button>
+                        <button className="px-6 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700">
+                          เริ่มผ่อนเลย
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Features Section Preview */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="p-4 bg-gray-50 border-b">
+                  <h2 className="text-lg font-medium text-gray-900">Features Section</h2>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {data.features.map((feature, index) => (
+                      <div key={feature.id} className="bg-gray-50 p-6 rounded-lg text-center">
+                        <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <span className="text-xl font-bold">{index + 1}</span>
+                        </div>
+                        <EditableText
+                          path={`features.${index}.title`}
+                          value={feature.title}
+                          className="text-xl font-medium mb-2"
+                          tag="h3"
+                        />
+                        <EditableText
+                          path={`features.${index}.description`}
+                          value={feature.description}
+                          className="text-gray-600"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Products Section Preview */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="p-4 bg-gray-50 border-b">
+                  <h2 className="text-lg font-medium text-gray-900">Products Section</h2>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
+                      <div className="p-4">
+                        <Image
+                          src="/images/iphone.png"
+                          alt="iPhone"
+                          width={300}
+                          height={300}
+                          className="rounded-lg shadow-lg object-cover"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Footer Placeholder */}
+              <div className="bg-gray-800 text-white py-8">
+                <div className="container mx-auto px-4 text-center">
+                  <AdminPlaceholder title="ส่วนท้ายเว็บไซต์" className="text-white" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

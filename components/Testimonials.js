@@ -1,7 +1,8 @@
 import React from 'react';
 
-export default function Testimonials() {
-  const features = [
+export default function Testimonials({ data }) {
+  // Use data from props if available, otherwise use default data
+  const features = data?.features || [
     {
       id: 1,
       title: 'ง่าย!',

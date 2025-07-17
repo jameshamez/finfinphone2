@@ -1,0 +1,122 @@
+  // แสดงไอคอนตามชื่อ
+  const getIconByName = (iconName) => {
+    const icons = {
+      'FaMoneyBillWave': <FaMoneyBillWave />,
+      'FaShoppingCart': <FaShoppingCart />,
+      'FaExchangeAlt': <FaExchangeAlt />,
+      'FaTag': <FaTag />,
+    };
+    
+    return icons[iconName] || <FaTag />;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4">กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">เกิดข้อผิดพลาด</h2>
+          <p className="mb-4">{error}</p>
+          <Link href="/admin" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            กลับไปหน้า Admin
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* Sidebar - คล้าย WordPress */}
+      <div className="w-64 bg-gray-900 text-white min-h-screen">
+        <div className="p-4 border-b border-gray-800">
+          <h1 className="text-xl font-bold">FinFin Admin</h1>
+        </div>
+        <nav className="mt-4">
+          <div className="px-4 py-2 bg-gray-800 text-white font-medium">จัดการเนื้อหา</div>
+          <Link href="/admin/homepage" className="flex items-center px-4 py-3 bg-blue-600 text-white hover:bg-blue-700">
+            <FaHome className="mr-3" /> หน้าแรก
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaShoppingCart className="mr-3" /> สินค้า
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaExchangeAlt className="mr-3" /> บริการ
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaMoneyBillWave className="mr-3" /> โปรโมชั่น
+          </Link>
+          <Link href="/" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800">
+            <FaTag className="mr-3" /> FAQ
+          </Link>
+        </nav>
+        <div className="absolute bottom-0 left-0 w-64 p-4 bg-gray-900 border-t border-gray-800">
+          <Link href="/" className="flex items-center text-gray-300 hover:text-white">
+            <FaArrowLeft className="mr-2" /> กลับไปหน้าเว็บไซต์
+          </Link>
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="py-6 px-8">
+          <div className="flex justify-between items-center mb-6 border-b pb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">จัดการหน้าแรก</h1>
+            
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleEditMode}
+                className={`px-4 py-2 rounded-md ${editMode ? 'bg-gray-500 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-600'} text-white flex items-center`}
+              >
+                {editMode ? <><FaTimes className="mr-2" /> ยกเลิกการแก้ไข</> : <><FaEdit className="mr-2" /> แก้ไขเนื้อหา</>}
+              </button>
+              
+              {editMode && (
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md flex items-center"
+                >
+                  {isSaving ? 'กำลังบันทึก...' : <><FaSave className="mr-2" /> บันทึกการเปลี่ยนแปลง</>}
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {saveMessage && (
+            <div className={`mb-6 p-4 rounded-md ${saveMessage.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'} flex items-center`}>
+              {saveMessage.type === 'success' ? (
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+              ) : (
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
+              )}
+              {saveMessage.text}
+            </div>
+          )}
+          
+          {editMode && (
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    คุณกำลังอยู่ในโหมดแก้ไข คลิกที่ข้อความหรือรูปภาพเพื่อแก้ไข และกดปุ่ม "บันทึกการเปลี่ยนแปลง" เมื่อเสร็จสิ้น
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}

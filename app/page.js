@@ -8,8 +8,21 @@ import FAQ from '../components/FAQ';
 import ServiceBanner from '../components/ServiceBanner';
 import Footer from '../components/Footer';
 import LoanForm from '../components/LoanForm';
+import { promises as fs } from 'fs';
+import path from 'path';
 
-export default function Home() {
+export async function generateStaticParams() {
+  return [];
+}
+
+async function getHomepageData() {
+  const filePath = path.join(process.cwd(), 'data', 'homepage.json');
+  const fileContents = await fs.readFile(filePath, 'utf8');
+  return JSON.parse(fileContents);
+}
+
+export default async function Home() {
+  const homepageData = await getHomepageData();
   return (
     <main>
       <Navbar />
@@ -21,7 +34,7 @@ export default function Home() {
           <div className="w-full max-w-5xl px-2">
             <div className="rounded-xl overflow-hidden shadow-lg">
               <img 
-                src="/images/banner1.png" 
+                src={homepageData?.hero?.image || "/images/banner1.png"} 
                 alt="Promotion Banner" 
                 className="w-full h-auto object-cover max-h-32"
               />
@@ -33,14 +46,14 @@ export default function Home() {
         <div className="container mx-auto px-4 pt-16 pb-20 relative">
           <div className="flex justify-start items-center pl-6 md:pl-32 lg:pl-48">
             <div className="text-white z-10">
-              <h2 className="text-3xl md:text-4xl font-bold">ผ่อนไอโฟนที่ ฟินฟิน</h2>
-              <h3 className="text-2xl md:text-3xl font-bold mt-2">ง่าย ไว ชัวร์!</h3>
+              <h2 className="text-3xl md:text-4xl font-bold">{homepageData?.hero?.title || "ผ่อนไอโฟนที่ ฟินฟิน"}</h2>
+              <h3 className="text-2xl md:text-3xl font-bold mt-2">{homepageData?.hero?.subtitle || "ง่าย ไว ชัวร์!"}</h3>
             </div>
           </div>
           
           <div className="absolute right-[20%] top-[80%] transform -translate-y-1/2">
             <img 
-              src="/images/iphone1.png" 
+              src={homepageData?.hero?.productImage || "/images/iphone1.png"} 
               alt="iPhone" 
               className="max-w-[140px] drop-shadow-lg"
             />
@@ -64,21 +77,21 @@ export default function Home() {
       <div className="bg-white">
         <div className="container mx-auto px-4">
           {/* <h2 className="text-center text-2xl md:text-3xl font-bold mb-10">บริการของเรา</h2> */}
-          <ServiceCards />
+          <ServiceCards services={homepageData?.services} />
         </div>
       </div>
 
       {/* Customer Reviews */}
-      <CustomerReviews />
+      <CustomerReviews data={homepageData?.customerReviews} />
 
       {/* Product Showcase */}
-      <ProductShowcase />
+      <ProductShowcase data={homepageData?.productShowcase} />
 
       {/* Testimonials */}
-      <Testimonials />
+      <Testimonials data={homepageData?.testimonials} />
 
       {/* FAQ */}
-      <FAQ />
+      <FAQ data={homepageData} />
       
       {/* Service Banner */}
       <ServiceBanner />

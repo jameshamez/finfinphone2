@@ -3,8 +3,9 @@
 import React from 'react';
 import Image from 'next/image';
 
-export default function CustomerReviews() {
-  const reviews = [
+export default function CustomerReviews({ data }) {
+  // Use data from props if available, otherwise use default data
+  const reviews = data?.reviews || [
     {
       id: 1,
       image: "/images/review1.png",

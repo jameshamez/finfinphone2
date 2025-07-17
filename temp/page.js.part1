@@ -1,0 +1,111 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { FaEdit, FaSave, FaTimes, FaHome, FaArrowLeft, FaShoppingCart, FaExchangeAlt, FaMoneyBillWave, FaTag } from "react-icons/fa";
+
+export default function AdminHomepagePage() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(null);
+  const editInputRef = useRef(null);
+
+  // โหลดข้อมูลหน้าแรก
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/cms/homepage');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // เปิด/ปิดโหมดแก้ไข
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+    setActiveEdit(null);
+  };
+
+  // เริ่มแก้ไขฟิลด์
+  const startEditing = (path, value) => {
+    setActiveEdit({ path, value });
+    setTimeout(() => {
+      if (editInputRef.current) {
+        editInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  // ยกเลิกการแก้ไข
+  const cancelEditing = () => {
+    setActiveEdit(null);
+  };
+
+  // บันทึกการแก้ไขฟิลด์
+  const saveEdit = (newValue) => {
+    if (!activeEdit) return;
+    
+    const { path } = activeEdit;
+    const pathParts = path.split('.');
+    const updatedData = { ...data };
+    
+    let current = updatedData;
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const part = pathParts[i];
+      if (part.includes('[')) {
+        const arrayName = part.split('[')[0];
+        const index = parseInt(part.split('[')[1].replace(']', ''));
+        current = current[arrayName][index];
+      } else {
+        current = current[part];
+      }
+    }
+    
+    const lastPart = pathParts[pathParts.length - 1];
+    current[lastPart] = newValue;
+    
+    setData(updatedData);
+    setActiveEdit(null);
+  };
+
+  // บันทึกข้อมูลทั้งหมด
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveMessage(null);
+    
+    try {
+      const response = await fetch('/api/cms/homepage', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save data');
+      }
+      
+      setSaveMessage({ type: 'success', text: 'บันทึกข้อมูลสำเร็จ' });
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (err) {
+      setSaveMessage({ type: 'error', text: `เกิดข้อผิดพลาด: ${err.message}` });
+    } finally {
+      setIsSaving(false);
+    }
+  };

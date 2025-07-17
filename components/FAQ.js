@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 
-export default function FAQ() {
+export default function FAQ({ data }) {
   const [openItem, setOpenItem] = useState(1); // Default open is the second item (index 1)
 
-  const faqItems = [
+  // ใช้ข้อมูลจาก props ถ้ามี หรือใช้ข้อมูลเริ่มต้นถ้าไม่มี
+  const defaultFaqItems = [
     {
       id: 0,
       question: 'ใช้เอกสารอะไรบ้าง',
@@ -45,6 +46,23 @@ export default function FAQ() {
       )
     },
   ];
+  
+  // ใช้ข้อมูลจาก props ถ้ามี หรือใช้ข้อมูลเริ่มต้นถ้าไม่มี
+  const faqItems = data?.faq?.items || defaultFaqItems;
+  
+  // แปลงคำตอบที่เป็นข้อความที่มีการขึ้นบรรทัดใหม่ให้เป็น JSX
+  const renderAnswer = (answer) => {
+    if (typeof answer === 'string' && answer.includes('\n')) {
+      return (
+        <div className="space-y-1">
+          {answer.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+        </div>
+      );
+    }
+    return answer;
+  };
 
   const toggleItem = (id) => {
     setOpenItem(openItem === id ? null : id);
@@ -77,7 +95,7 @@ export default function FAQ() {
               
               {openItem === item.id && (
                 <div className={`bg-white px-4 py-3 border-t ${[0, 1, 2, 3, 4].includes(item.id) ? 'text-black' : 'text-[#2A3070]'}`}>
-                  <div className="ml-9">{item.answer}</div>
+                  <div className="ml-9">{renderAnswer(item.answer)}</div>
                 </div>
               )}
             </div>

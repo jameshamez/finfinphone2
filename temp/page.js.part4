@@ -1,0 +1,176 @@
+          
+          {/* Hero Section */}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-4 border-b pb-2">Hero Section</h2>
+              
+              <div className="bg-blue-600 text-white p-6 rounded-lg flex flex-col md:flex-row">
+                <div className="md:w-1/2 mb-6 md:mb-0 md:pr-6">
+                  <h1 className="text-4xl font-bold mb-2">
+                    <EditableText 
+                      path="hero.title" 
+                      value={data.hero.title} 
+                      className="text-4xl font-bold"
+                    />
+                  </h1>
+                  <h2 className="text-2xl mb-4">
+                    <EditableText 
+                      path="hero.subtitle" 
+                      value={data.hero.subtitle}
+                      className="text-2xl"
+                    />
+                  </h2>
+                  <p className="mb-6">
+                    <EditableText 
+                      path="hero.description" 
+                      value={data.hero.description}
+                      type="textarea"
+                    />
+                  </p>
+                  <button className="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors">
+                    <EditableText 
+                      path="hero.buttonText" 
+                      value={data.hero.buttonText}
+                    />
+                  </button>
+                  <div className="text-xs mt-2 text-blue-200">
+                    Link: <EditableText path="hero.buttonLink" value={data.hero.buttonLink} />
+                  </div>
+                </div>
+                <div className="md:w-1/2">
+                  <EditableImage 
+                    path="hero.image" 
+                    src={data.hero.image}
+                    alt="Hero Image"
+                    width={500}
+                    height={300}
+                    className="rounded-lg w-full h-auto object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Features Section */}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-4 border-b pb-2">Features Section</h2>
+              
+              <div className="mb-4">
+                <h3 className="font-semibold text-lg mb-2">
+                  <EditableText 
+                    path="features.title" 
+                    value={data.features.title}
+                    className="text-lg"
+                  />
+                </h3>
+                <p className="text-gray-600">
+                  <EditableText 
+                    path="features.subtitle" 
+                    value={data.features.subtitle}
+                    type="textarea"
+                  />
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.features.items.map((feature, index) => (
+                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="text-blue-500 mb-2">
+                      {getIconByName(feature.icon)}
+                    </div>
+                    <h3 className="font-semibold mb-2">
+                      <EditableText 
+                        path={`features.items[${index}].title`} 
+                        value={feature.title}
+                      />
+                    </h3>
+                    <p className="text-gray-600">
+                      <EditableText 
+                        path={`features.items[${index}].description`} 
+                        value={feature.description}
+                        type="textarea"
+                      />
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          {/* Product Showcase */}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-4 border-b pb-2">Product Showcase</h2>
+              
+              <div className="mb-4">
+                <h3 className="font-semibold text-lg mb-2">
+                  <EditableText 
+                    path="productShowcase.title" 
+                    value={data.productShowcase.title}
+                    className="text-lg"
+                  />
+                </h3>
+                <p className="text-gray-600">
+                  <EditableText 
+                    path="productShowcase.subtitle" 
+                    value={data.productShowcase.subtitle}
+                    type="textarea"
+                  />
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.productShowcase.products.map((product, index) => (
+                  <div key={index} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="h-48 bg-gray-100 relative">
+                      <EditableImage 
+                        path={`productShowcase.products[${index}].image`} 
+                        src={product.image}
+                        alt={product.name}
+                        width={300}
+                        height={200}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold mb-1">
+                        <EditableText 
+                          path={`productShowcase.products[${index}].name`} 
+                          value={product.name}
+                        />
+                      </h3>
+                      <p className="text-blue-600 font-bold mb-2">
+                        <EditableText 
+                          path={`productShowcase.products[${index}].price`} 
+                          value={product.price}
+                        />
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        <EditableText 
+                          path={`productShowcase.products[${index}].description`} 
+                          value={product.description}
+                          type="textarea"
+                        />
+                      </p>
+                      <div className="text-xs mt-2 text-gray-500">
+                        Link: <EditableText path={`productShowcase.products[${index}].link`} value={product.link} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 text-center">
+                <button className="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                  <EditableText 
+                    path="productShowcase.buttonText" 
+                    value={data.productShowcase.buttonText}
+                  />
+                </button>
+                <div className="text-xs mt-2 text-gray-500">
+                  Link: <EditableText path="productShowcase.buttonLink" value={data.productShowcase.buttonLink} />
+                </div>
+              </div>
+            </div>
+          </div>

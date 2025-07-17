@@ -1,0 +1,209 @@
+  // คอมโพเนนต์สำหรับแสดงข้อความที่แก้ไขได้
+  const EditableText = ({ path, value, type = 'text', className = '' }) => {
+    const isEditing = activeEdit && activeEdit.path === path;
+    
+    if (!editMode) {
+      return <span className={className}>{value}</span>;
+    }
+    
+    if (isEditing) {
+      if (type === 'textarea') {
+        return (
+          <div className="relative inline-block w-full">
+            <textarea
+              ref={editInputRef}
+              className="w-full p-2 border border-blue-500 rounded bg-white text-gray-800"
+              value={activeEdit.value}
+              onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+              rows={3}
+            />
+            <div className="absolute right-0 top-0 flex">
+              <button
+                className="bg-green-500 text-white p-1 rounded-tr"
+                onClick={() => saveEdit(activeEdit.value)}
+              >
+                <FaSave size={12} />
+              </button>
+              <button
+                className="bg-red-500 text-white p-1 rounded-br"
+                onClick={cancelEditing}
+              >
+                <FaTimes size={12} />
+              </button>
+            </div>
+          </div>
+        );
+      }
+      
+      return (
+        <div className="relative inline-block">
+          <input
+            ref={editInputRef}
+            type="text"
+            className="p-1 border border-blue-500 rounded bg-white text-gray-800 w-full"
+            value={activeEdit.value}
+            onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+          />
+          <div className="absolute right-0 top-0 flex">
+            <button
+              className="bg-green-500 text-white p-1 rounded-tr"
+              onClick={() => saveEdit(activeEdit.value)}
+            >
+              <FaSave size={12} />
+            </button>
+            <button
+              className="bg-red-500 text-white p-1 rounded-br"
+              onClick={cancelEditing}
+            >
+              <FaTimes size={12} />
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <span
+        className={`${className} cursor-pointer hover:bg-blue-100 hover:border-dashed hover:border hover:border-blue-300 p-1 rounded`}
+        onClick={() => startEditing(path, value)}
+      >
+        {value}
+        <span className="ml-1 text-blue-500 opacity-0 group-hover:opacity-100">
+          <FaEdit size={12} />
+        </span>
+      </span>
+    );
+  };
+
+  // คอมโพเนนต์สำหรับแสดงรูปภาพที่แก้ไขได้
+  const EditableImage = ({ path, src, alt, width, height, className = '' }) => {
+    const isEditing = activeEdit && activeEdit.path === path;
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
+    
+    if (!editMode) {
+      return (
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+        />
+      );
+    }
+    
+    const handleFileUpload = async (e) => {
+      if (!e.target.files || e.target.files.length === 0) return;
+      
+      const file = e.target.files[0];
+      setUploading(true);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          setActiveEdit({...activeEdit, value: result.url});
+        } else {
+          alert('อัพโหลดไม่สำเร็จ: ' + (result.error || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ'));
+        }
+      } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการอัพโหลดไฟล์:', error);
+        alert('เกิดข้อผิดพลาดในการอัพโหลดไฟล์');
+      } finally {
+        setUploading(false);
+      }
+    };
+    
+    if (isEditing) {
+      return (
+        <div className="relative p-4 border-2 border-blue-500 rounded bg-white shadow-lg w-full max-w-md">
+          <h3 className="font-bold text-lg mb-2">แก้ไขรูปภาพ</h3>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">URL รูปภาพ</label>
+            <input
+              ref={editInputRef}
+              type="text"
+              className="p-2 border rounded w-full mb-2"
+              value={activeEdit.value}
+              onChange={(e) => setActiveEdit({ ...activeEdit, value: e.target.value })}
+              placeholder="ใส่ URL รูปภาพ"
+            />
+            
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={() => fileInputRef.current?.click()} 
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors flex items-center"
+                disabled={uploading}
+              >
+                {uploading ? 'กำลังอัพโหลด...' : 'อัพโหลดรูปภาพ'}
+              </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload} 
+                className="hidden" 
+                accept="image/*"
+              />
+            </div>
+          </div>
+          
+          {/* แสดงตัวอย่างรูปภาพ */}
+          {activeEdit.value && (
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 mb-1">ตัวอย่าง:</p>
+              <div className="border rounded p-2 bg-gray-50">
+                <img 
+                  src={activeEdit.value} 
+                  alt="Preview" 
+                  className="max-h-40 object-contain mx-auto"
+                  onError={(e) => e.target.src = '/images/placeholder.png'}
+                />
+              </div>
+            </div>
+          )}
+          
+          <div className="flex justify-end space-x-2">
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors flex items-center"
+              onClick={cancelEditing}
+            >
+              <FaTimes className="mr-1" /> ยกเลิก
+            </button>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors flex items-center"
+              onClick={() => saveEdit(activeEdit.value)}
+              disabled={uploading}
+            >
+              <FaSave className="mr-1" /> บันทึก
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="relative group cursor-pointer">
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+          onClick={() => startEditing(path, src)}
+        />
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-blue-500 text-white rounded-full p-1">
+          <FaEdit size={16} />
+        </div>
+      </div>
+    );
+  };
