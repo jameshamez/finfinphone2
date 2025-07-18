@@ -15,28 +15,28 @@ export const metadata = {
 
 export default function LoanPage() {
   return (
-    <main>
+    <main className="w-full overflow-x-hidden">
       <Navbar/>
-      <div className="bg-blue-600 relative overflow-hidden pb-32 ">
+      <div className="bg-blue-600 relative overflow-hidden pb-16 sm:pb-24 md:pb-32">
         {/* Banner */}
-        <div className="w-full pt-6 pb-4 flex justify-center">
-          <div className="w-full max-w-5xl px-2">
+        <div className="w-full pt-4 sm:pt-6 pb-2 sm:pb-4 flex justify-center">
+          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="rounded-xl overflow-hidden shadow-lg">
               <img 
                 src="/images/loan-banner.png" 
                 alt="Loan Banner" 
-                className="w-full h-auto object-cover max-h-32"
+                className="w-full h-auto object-cover max-h-24 sm:max-h-32"
               />
             </div>
           </div>
         </div>
         
         {/* Main Content */}
-        <div className="container mx-auto px-4 pt-16 relative">
-          <div className="flex justify-start items-center pl-6 md:pl-32 lg:pl-48">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 md:pt-16 pb-12 sm:pb-16 md:pb-20 relative">
+          <div className="flex justify-start items-center pl-4 sm:pl-6 md:pl-16 lg:pl-24 xl:pl-32">
             <div className="text-white z-10">
-              <h2 className="text-3xl md:text-4xl font-bold">อยากได้ไอโฟน แต่ไม่มีเงินก้อน...</h2>
-              <h3 className="text-2xl md:text-3xl font-bold mt-2">มาออมเงินดาวน์ที่ ฟินฟินได้</h3>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">อยากได้ไอโฟน แต่ไม่มีเงินก้อน...</h2>
+              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mt-2">มาออมเงินดาวน์ที่ ฟินฟินได้</h3>
           </div>
           </div>
         </div>
