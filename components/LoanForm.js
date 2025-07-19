@@ -89,7 +89,7 @@ export default function LoanForm() {
       
       <hr className="my-6 border-gray-200" />
       
-      <form>
+      {/* <form>
         <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div className="border rounded-md p-4 flex items-center">
@@ -146,7 +146,7 @@ export default function LoanForm() {
         <div className="text-center text-sm mt-4 text-gray-500">
           <p>การกดยืนยันข้อมูล ถือว่าคุณอ่านและรับทราบ <a href="#" className="text-blue-600 underline">นโยบายคุ้มครองข้อมูลส่วนบุคคล</a> เรียบร้อยแล้ว</p>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 }
